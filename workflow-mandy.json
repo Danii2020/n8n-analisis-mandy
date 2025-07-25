@@ -1,0 +1,724 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4dea2a22-5cd7-4e8a-899f-ed3d67dfc6c0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        -176
+      ],
+      "id": "8dab91c2-4ad6-4c2a-82fc-44cabac4cd2f",
+      "name": "Convert to File",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        0
+      ],
+      "id": "1133fe2a-627d-4432-8a7c-651ed4b01659",
+      "name": "Convert to File1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        176
+      ],
+      "id": "d2f652ba-c1ea-4012-8457-bc79ee168eb1",
+      "name": "Convert to File2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "destinationKey": "items",
+        "options": {
+          "keepSource": "json"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        784,
+        -176
+      ],
+      "id": "fc3a4c36-c41a-4cb0-9ae2-94ad083bf52a",
+      "name": "Extract JSON to output1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "destinationKey": "items",
+        "options": {
+          "keepSource": "json"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        784,
+        0
+      ],
+      "id": "15f77845-1f63-4d4f-97dd-4712fa9a86b1",
+      "name": "Extract JSON to output2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "destinationKey": "items",
+        "options": {
+          "keepSource": "json"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        784,
+        176
+      ],
+      "id": "45174883-4715-4cd7-83b5-b0e190b937b1",
+      "name": "Extract JSON to output3",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1168,
+        -16
+      ],
+      "id": "4ef83a86-ca37-48cd-952a-ee0ee4af2eb2",
+      "name": "Merge",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2208,
+        -16
+      ],
+      "id": "a856c6f6-a635-4f4c-b32d-fa59d808330a",
+      "name": "Merge1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "17jVXRB7P02o0FDyJYphHHoEmaedUXPJC",
+          "mode": "list",
+          "cachedResultName": "data.xlsx",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17jVXRB7P02o0FDyJYphHHoEmaedUXPJC/edit?usp=drivesdk&ouid=111929742179581711405&rtpof=true&sd=true"
+        },
+        "options": {
+          "binaryPropertyName": "=data"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c266bdc8-b85e-4ca5-b5bf-9ea6729ae068",
+      "name": "Descargar archivo de Excel",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "mn968KRArhPwcq1o",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function toCamelCase(str) {\n  return str\n    // eliminar caracteres que no sean letras, números o espacios\n    .replace(/[^a-zA-Z0-9 ]+/g, '')\n    // separar por espacios\n    .split(' ')\n    .map((word, index) => {\n      const lower = word.toLowerCase();\n      // la primera palabra en minúscula completa\n      if (index === 0) return lower;\n      // resto: primera letra en mayúscula + resto en minúscula\n      return lower.charAt(0).toUpperCase() + lower.slice(1);\n    })\n    .join('');\n}\n\nfunction normalizeKeysToCamel(data) {\n  return data.map(item => {\n    const normalized = {};\n    for (const originalKey of Object.keys(item)) {\n      const camelKey = toCamelCase(originalKey);\n      normalized[camelKey] = item[originalKey];\n    }\n    return normalized;\n  });\n}\n\nreturn normalizeKeysToCamel(items[0].json.items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        -176
+      ],
+      "id": "0c487724-390d-4094-8787-c20c448a37ce",
+      "name": "Formatear Ventas 2024"
+    },
+    {
+      "parameters": {
+        "jsCode": "function toCamelCase(str) {\n  return str\n    // eliminar caracteres que no sean letras, números o espacios\n    .replace(/[^a-zA-Z0-9 ]+/g, '')\n    // separar por espacios\n    .split(' ')\n    .map((word, index) => {\n      const lower = word.toLowerCase();\n      // la primera palabra en minúscula completa\n      if (index === 0) return lower;\n      // resto: primera letra en mayúscula + resto en minúscula\n      return lower.charAt(0).toUpperCase() + lower.slice(1);\n    })\n    .join('');\n}\n\nfunction normalizeKeysToCamel(data) {\n  return data.map(item => {\n    const normalized = {};\n    for (const originalKey of Object.keys(item)) {\n      const camelKey = toCamelCase(originalKey);\n      normalized[camelKey] = item[originalKey];\n    }\n    return normalized;\n  });\n}\n\nreturn normalizeKeysToCamel(items[0].json.items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        0
+      ],
+      "id": "481fa3f6-0101-43ee-8c1e-bf9413644718",
+      "name": "Formatear Inventarios"
+    },
+    {
+      "parameters": {
+        "jsCode": "function toCamelCase(str) {\n  return str\n    // eliminar caracteres que no sean letras, números o espacios\n    .replace(/[^a-zA-Z0-9 ]+/g, '')\n    // separar por espacios\n    .split(' ')\n    .map((word, index) => {\n      const lower = word.toLowerCase();\n      // la primera palabra en minúscula completa\n      if (index === 0) return lower;\n      // resto: primera letra en mayúscula + resto en minúscula\n      return lower.charAt(0).toUpperCase() + lower.slice(1);\n    })\n    .join('');\n}\n\nfunction normalizeKeysToCamel(data) {\n  return data.map(item => {\n    const normalized = {};\n    for (const originalKey of Object.keys(item)) {\n      const camelKey = toCamelCase(originalKey);\n      normalized[camelKey] = item[originalKey];\n    }\n    return normalized;\n  });\n}\n\nreturn normalizeKeysToCamel(items[0].json.items)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        176
+      ],
+      "id": "f0cfecd1-cd45-4512-89eb-e99f79704039",
+      "name": "Formatear Ventas 2023"
+    },
+    {
+      "parameters": {
+        "jsCode": "function mergeProductData(data) {\n  const merged = {};\n  \n  data.forEach(itemx => {\n    const item = itemx.json\n    const producto = item.producto;\n    console.log(producto)\n    // Inicializar el producto si no existe\n    if (!merged[producto]) {\n      merged[producto] = {\n        producto: producto,\n        ventas2023: {},\n        ventas2024: {},\n        inventarios: {}\n      };\n    }\n    \n    // Identificar el tipo de datos basado en las propiedades del objeto\n    if (item.ventasAnuales2023) {\n      // Es un registro de ventas 2023\n      const { producto: prod, ventasAnuales2023, ...meses } = item;\n      merged[producto].ventas2023 = {\n        ...meses,\n        ventasAnuales2023\n      };\n    } else if (item.ventasRealesEneroASeptiembre) {\n      // Es un registro de ventas 2024\n      const { producto: prod, ventasRealesEneroASeptiembre, ...meses } = item;\n      merged[producto].ventas2024 = {\n        ...meses,\n        ventasRealesEneroASeptiembre\n      };\n    } else if (item.inventarioVendidoEneroASeptiembre !== undefined) {\n      // Es un registro de inventarios\n      const { producto: prod, ...inventario } = item;\n      merged[producto].inventarios = inventario;\n    }\n  });\n  \n  // Convertir el objeto a array\n  return Object.values(merged);\n}\n\n// Ejecutar el merge\nconst resultado = mergeProductData(items);\nreturn resultado"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        0
+      ],
+      "id": "10d2c552-91f9-4301-af10-a2e001a44b92",
+      "name": "Formatear JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Código para nodo de n8n - Proyección de ventas Oct-Dic 2024\n// Basado en la temporalidad de ventas 2023\n\n// Obtener los datos de entrada\nconst items = $input.all();\nconst ventasData = items\n\nfunction calcularProyeccionVentas(productos) {\n  const proyecciones = [];\n  \n  productos.forEach(producto => {\n    const { producto: nombre, ventas2023, ventas2024, inventarios } = producto.json;\n    \n    // 1. Calcular porcentajes mensuales de 2023\n    const porcentajes2023 = {};\n    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', \n                   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];\n    \n    meses.forEach(mes => {\n      porcentajes2023[mes] = (ventas2023[mes] / ventas2023.ventasAnuales2023) * 100;\n    });\n    \n    // 2. Calcular suma de porcentajes enero-septiembre 2023\n    const porcentajeEneroSeptiembre2023 = meses.slice(0, 9).reduce((suma, mes) => {\n      return suma + porcentajes2023[mes];\n    }, 0);\n    \n    // 3. Calcular suma de porcentajes octubre-diciembre 2023\n    const porcentajeOctubreDiciembre2023 = meses.slice(9, 12).reduce((suma, mes) => {\n      return suma + porcentajes2023[mes];\n    }, 0);\n    \n    // 4. Proyectar ventas anuales 2024 basado en ventas reales enero-septiembre\n    const ventasProyectadasAnuales2024 = \n      ventas2024.ventasRealesEneroASeptiembre / (porcentajeEneroSeptiembre2023 / 100);\n    \n    // 5. Calcular ventas proyectadas para octubre-diciembre 2024\n    const ventasProyectadasOctubreDiciembre = \n      ventasProyectadasAnuales2024 * (porcentajeOctubreDiciembre2023 / 100);\n    \n    // 6. Calcular ventas mensuales proyectadas Oct-Dic 2024\n    const factor2024 = ventasProyectadasAnuales2024 / ventas2023.ventasAnuales2023;\n    \n    const octubreProyectado = Math.round(ventas2023.octubre * factor2024);\n    const noviembreProyectado = Math.round(ventas2023.noviembre * factor2024);\n    const diciembreProyectado = Math.round(ventas2023.diciembre * factor2024);\n    \n    // 7. Calcular ventas totales proyectadas 2024\n    const ventasTotalesProyectadas2024 = \n      ventas2024.ventasRealesEneroASeptiembre + \n      octubreProyectado + \n      noviembreProyectado + \n      diciembreProyectado;\n    \n    // 8. Análisis de inventario vs proyección\n    const inventarioDisponibleOctDic = \n      inventarios.inventarioActual + \n      inventarios.entregaProgramadaOctubre + \n      inventarios.entregaProgramadaNoviembre + \n      inventarios.entregaProgramadaDiciembre;\n    \n    const ventasProyectadasOctDic = octubreProyectado + noviembreProyectado + diciembreProyectado;\n    const diferenciaInventario = inventarioDisponibleOctDic - ventasProyectadasOctDic;\n    \n    // 9. Crecimiento comparativo\n    const crecimientoVsAnterior = ((ventasTotalesProyectadas2024 / ventas2023.ventasAnuales2023) - 1) * 100;\n    \n    // Crear objeto de proyección\n    const proyeccion = {\n      producto: nombre,\n      analisisPorcentajes2023: {\n        enero: parseFloat(porcentajes2023.enero.toFixed(2)),\n        febrero: parseFloat(porcentajes2023.febrero.toFixed(2)),\n        marzo: parseFloat(porcentajes2023.marzo.toFixed(2)),\n        abril: parseFloat(porcentajes2023.abril.toFixed(2)),\n        mayo: parseFloat(porcentajes2023.mayo.toFixed(2)),\n        junio: parseFloat(porcentajes2023.junio.toFixed(2)),\n        julio: parseFloat(porcentajes2023.julio.toFixed(2)),\n        agosto: parseFloat(porcentajes2023.agosto.toFixed(2)),\n        septiembre: parseFloat(porcentajes2023.septiembre.toFixed(2)),\n        octubre: parseFloat(porcentajes2023.octubre.toFixed(2)),\n        noviembre: parseFloat(porcentajes2023.noviembre.toFixed(2)),\n        diciembre: parseFloat(porcentajes2023.diciembre.toFixed(2)),\n        porcentajeEneroSeptiembre: parseFloat(porcentajeEneroSeptiembre2023.toFixed(2)),\n        porcentajeOctubreDiciembre: parseFloat(porcentajeOctubreDiciembre2023.toFixed(2))\n      },\n      proyeccion2024: {\n        ventasRealesEneroSeptiembre: ventas2024.ventasRealesEneroASeptiembre,\n        ventasProyectadasAnuales: Math.round(ventasProyectadasAnuales2024),\n        octubreProyectado: octubreProyectado,\n        noviembreProyectado: noviembreProyectado,\n        diciembreProyectado: diciembreProyectado,\n        ventasProyectadasOctubreDiciembre: Math.round(ventasProyectadasOctubreDiciembre),\n        ventasTotalesProyectadas2024: Math.round(ventasTotalesProyectadas2024)\n      },\n      analisisInventario: {\n        inventarioActual: inventarios.inventarioActual,\n        entregaProgramadaOctubre: inventarios.entregaProgramadaOctubre,\n        entregaProgramadaNoviembre: inventarios.entregaProgramadaNoviembre,\n        entregaProgramadaDiciembre: inventarios.entregaProgramadaDiciembre,\n        inventarioDisponibleOctDic: inventarioDisponibleOctDic,\n        ventasProyectadasOctDic: ventasProyectadasOctDic,\n        diferencia: diferenciaInventario,\n        estadoInventario: diferenciaInventario >= 0 ? 'SUFICIENTE' : 'INSUFICIENTE',\n        faltanteOSobrante: Math.abs(diferenciaInventario)\n      },\n      comparativo: {\n        ventas2023: ventas2023.ventasAnuales2023,\n        ventasProyectadas2024: Math.round(ventasTotalesProyectadas2024),\n        crecimientoAbsoluto: Math.round(ventasTotalesProyectadas2024 - ventas2023.ventasAnuales2023),\n        crecimientoPorcentual: parseFloat(crecimientoVsAnterior.toFixed(2))\n      }\n    };\n    \n    proyecciones.push(proyeccion);\n  });\n  \n  return proyecciones;\n}\n\n// Ejecutar el cálculo\nconst resultadoProyecciones = calcularProyeccionVentas(ventasData);\n\n// Crear resumen general\nconst resumenGeneral = {\n  totalProductos: resultadoProyecciones.length,\n  ventasReales2024EneroSeptiembre: resultadoProyecciones.reduce((sum, p) => \n    sum + p.proyeccion2024.ventasRealesEneroSeptiembre, 0),\n  ventasProyectadasOctubreDiciembre: resultadoProyecciones.reduce((sum, p) => \n    sum + p.proyeccion2024.ventasProyectadasOctubreDiciembre, 0),\n  ventasTotalesProyectadas2024: resultadoProyecciones.reduce((sum, p) => \n    sum + p.proyeccion2024.ventasTotalesProyectadas2024, 0),\n  ventas2023Total: resultadoProyecciones.reduce((sum, p) => \n    sum + p.comparativo.ventas2023, 0),\n  crecimientoGeneralAbsoluto: resultadoProyecciones.reduce((sum, p) => \n    sum + p.comparativo.crecimientoAbsoluto, 0),\n  productosConInventarioInsuficiente: resultadoProyecciones.filter(p => \n    p.analisisInventario.estadoInventario === 'INSUFICIENTE').length\n};\n\n// Calcular crecimiento general porcentual\nresumenGeneral.crecimientoGeneralPorcentual = parseFloat(\n  ((resumenGeneral.ventasTotalesProyectadas2024 / resumenGeneral.ventas2023Total) - 1) * 100\n).toFixed(2);\n\n// Retornar los resultados para n8n\nreturn [\n  {\n    json: {\n      fecha: new Date().toISOString(),\n      resumenGeneral: resumenGeneral,\n      proyeccionesPorProducto: resultadoProyecciones,\n      metodologia: {\n        descripcion: \"Proyección basada en temporalidad de ventas 2023\",\n        pasos: [\n          \"1. Cálculo de porcentajes mensuales de ventas 2023\",\n          \"2. Aplicación de porcentajes a ventas reales 2024 (ene-sep)\",\n          \"3. Extrapolación para obtener ventas anuales proyectadas 2024\",\n          \"4. Cálculo de ventas mensuales proyectadas oct-dic 2024\",\n          \"5. Análisis de suficiencia de inventario\",\n          \"6. Comparativo de crecimiento vs 2023\"\n        ]\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "a3525e77-80d6-4955-a08c-1aa73641ebb2",
+      "name": "Estimar proyecciones"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Eres un experto en gestión de inventarios y proyecciones de ventas en el sector de juguetes\ndebes realizar un análisis completo en base a una serie de datos de juguetes.",
+              "role": "assistant"
+            },
+            {
+              "content": "=Analiza cada producto dentro de la key de \"proyeccionesPorProducto\" y en base a su estado de de inventario, identifica los siguientes escenarios:\n1 . En caso de exceso de inventario:\n• Proponer medidas inmediatas para reducir el riesgo antes del 1 de enero\nde 2025, ya que los productos se volverán obsoletos en esa fecha y el\nimpacto financiero sería considerable.\n• Sugerir estrategias como promociones al consumidor, incentivos a\ndetallistas para liberar espacio en las tiendas o descuentos.\no 2. En caso de quiebre de stock:\n• Considerar que las órdenes de compra tienen un plazo de 60 días desde\nque se realiza la orden hasta que el producto está disponible para la venta.\n\n• Identificar los productos en riesgo de quiebre de stock antes del 25 de\ndiciembre (Navidad) y generar órdenes inmediatamente para no perder\nventas durante esa fecha clave para la industria de juguetes.\n\nEl json es el siguiente: {{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1808,
+        -80
+      ],
+      "id": "c98d4344-dd84-47c1-9f45-e9849bf5a978",
+      "name": "Asistente analista de inventario",
+      "alwaysOutputData": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "RK3cSOmzkoZS2knA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Eres un experto en gestión de inventarios y proyecciones de ventas en el sector de juguetes\ndebe realizar un análisis completo en base a una serie de datos de juguetes. ",
+              "role": "assistant"
+            },
+            {
+              "content": "=Genera un listado de productos con las cantidades que se deben ordenar\npara evitar quiebre de stock.\n\nCrea un plan de acción para reducir el exceso de inventario, que incluya\nestrategias como promociones, descuentos, aumento en la publicidad, entre\notros.\n\nEl json es el siguiente: {{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1808,
+        128
+      ],
+      "id": "5c470ef9-417c-4643-a71d-49a961349fd5",
+      "name": "Asistente generador de plan de acción",
+      "alwaysOutputData": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "RK3cSOmzkoZS2knA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Eres un experto en gestión de inventarios y proyecciones de ventas en el sector de juguetes\ndebe realizar un análisis completo en base a una serie de datos de juguetes. ",
+              "role": "assistant"
+            },
+            {
+              "content": "=En base a la siguiente información en JSON, genera un documento profesional que refleje el resultado de los análisis y proyecciones hechos tomando en cuenta la Proyección de ventas, análisis de inventario y plan de acción.\n\nGenera el informe usando Markdown de manera correcta, toma en cuenta los espacios y saltos de línea que usen un formato correcto. No generes tablas u otra estructura que pueda dañar el formateo del markdown\n\nEsta es la información:\n{{ JSON.stringify($json)}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2432,
+        0
+      ],
+      "id": "911e4ef3-bbc2-4e6b-88c5-1f7cb90aed0b",
+      "name": "Asistente generador de informe ",
+      "alwaysOutputData": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "RK3cSOmzkoZS2knA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// items: array of incoming items in n8n\n\n/**\n * Sanitize a block of text for Markdown export:\n * - Remove all backticks (`)\n * - Strip the word \"markdown\" (case‑insensitive)\n * - Trim extra whitespace\n */\nfunction sanitize(text) {\n  return text\n    // eliminar backticks\n    .replace(/`+/g, '')\n    // eliminar la palabra \"markdown\" sin importar mayúsculas/minúsculas\n    .replace(/markdown/gi, '')\n    // opcional: colapsar múltiples saltos de línea en un máximo de dos\n    .replace(/\\n{3,}/g, '\\n\\n')\n    .trim();\n}\n\n// 1) Extraer y sanitizar cada “content”\nconst sanitizedContents = items\n  .map(item => {\n    let raw = '';\n    if (item.json?.message?.content) {\n      raw = item.json.message.content;\n    } else if (item.content?.json?.message?.content) {\n      raw = item.content.json.message.content;\n    }\n    return sanitize(raw);\n  })\n  .filter(text => text.length > 0);  // eliminar bloques vacíos\n\n// 2) Unir con dos saltos de línea entre cada bloque\nconst mergedContent = sanitizedContents.join('\\n\\n');\n\n// 3) Devolver un único item con el contenido limpio\nreturn [\n  {\n    json: {\n      mergedContent\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        0
+      ],
+      "id": "33555359-f262-4d65-b599-36fac932d562",
+      "name": "Formatear MD en JSON"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://md2doc.n8n.aemalsayer.com ",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "output",
+              "value": "={{ $json.mergedContent }}"
+            },
+            {
+              "name": "fileName",
+              "value": "informe-de-análisis-jugueteria-mandy"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2976,
+        0
+      ],
+      "id": "d0c30328-1e0d-48a4-86dc-13b8c6db126f",
+      "name": "Crear Google Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "m0vNzXeByGJUBSYi",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Ventas Reales 2024"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "efb4a176-50db-4cbd-a92e-739f3d8cd4e9",
+      "name": "Ventas Reales 2024"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Inventarios"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        416,
+        176
+      ],
+      "id": "39fd152b-c733-4eb6-8073-dc5212b028a0",
+      "name": "Inventarios"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Ventas 2023"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -176
+      ],
+      "id": "39dd8690-f70d-4f40-9ee0-d2fe54166252",
+      "name": "Ventas 2023"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Descargar archivo de Excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Extract JSON to output1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File2": {
+      "main": [
+        [
+          {
+            "node": "Extract JSON to output3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Extract JSON to output2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract JSON to output1": {
+      "main": [
+        [
+          {
+            "node": "Formatear Ventas 2024",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract JSON to output3": {
+      "main": [
+        [
+          {
+            "node": "Formatear Ventas 2023",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract JSON to output2": {
+      "main": [
+        [
+          {
+            "node": "Formatear Inventarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Formatear JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Asistente generador de informe ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar archivo de Excel": {
+      "main": [
+        [
+          {
+            "node": "Ventas 2023",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Inventarios",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ventas Reales 2024",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Ventas 2024": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Inventarios": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Formatear Ventas 2023": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Formatear JSON": {
+      "main": [
+        [
+          {
+            "node": "Estimar proyecciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estimar proyecciones": {
+      "main": [
+        [
+          {
+            "node": "Asistente analista de inventario",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Asistente generador de plan de acción",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Asistente analista de inventario": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Asistente generador de plan de acción": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Asistente generador de informe ": {
+      "main": [
+        [
+          {
+            "node": "Formatear MD en JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear MD en JSON": {
+      "main": [
+        [
+          {
+            "node": "Crear Google Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ventas Reales 2024": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inventarios": {
+      "main": [
+        [
+          {
+            "node": "Convert to File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ventas 2023": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "346ac891-0ac4-4ce1-81ee-b937b58ee6e5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0d43215ab7b81c739d7280d62db461fd1bd7318c5b01e6574f015551230a264e"
+  },
+  "id": "4Vzj5mba7h5O3Zpp",
+  "tags": []
+}
